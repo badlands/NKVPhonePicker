@@ -114,7 +114,7 @@ open class TextFieldPatternFormat: UITextField {
             } else {
                 // Because the UIControl target action is called before NSNotificaion (from which we fire our custom formatting), we need to
                 // force update finalStringWithoutFormatting to get the latest text. Otherwise, the last character would be missing.
-                textDidChange()
+//                textDidChange()
                 return finalStringWithoutFormatting
             }
         }
@@ -164,7 +164,7 @@ open class TextFieldPatternFormat: UITextField {
         
         // TODO: - Isn't there more elegant way how to do this?
         let currentTextForFormatting: String
-        
+
         if super.text?.characters.count > _textWithoutSecureBullets.characters.count {
             currentTextForFormatting = _textWithoutSecureBullets + super.text!.substring(from: super.text!.characters.index(super.text!.startIndex, offsetBy: _textWithoutSecureBullets.characters.count))
         } else if super.text?.characters.count == 0 {
@@ -173,50 +173,50 @@ open class TextFieldPatternFormat: UITextField {
         } else {
             currentTextForFormatting = _textWithoutSecureBullets.substring(to: _textWithoutSecureBullets.characters.index(_textWithoutSecureBullets.startIndex, offsetBy: super.text!.characters.count))
         }
-        
+
         if formatting != .noFormatting && currentTextForFormatting.characters.count > 0 && formattingPattern.characters.count > 0 {
             let tempString = TextFieldPatternFormat.makeOnlyDigitsString(currentTextForFormatting)
-            
+
             var finalText = ""
             var finalSecureText = ""
-            
+
             var stop = false
-            
+
             var formatterIndex = formattingPattern.startIndex
             var tempIndex = tempString.startIndex
-            
+
             while !stop {
                 let formattingPatternRange = formatterIndex ..< formattingPattern.index(formatterIndex, offsetBy: 1)
-                
+
                 if formattingPattern.substring(with: formattingPatternRange) != String(replacementChar) {
                     finalText = finalText + formattingPattern.substring(with: formattingPatternRange)
                     finalSecureText = finalSecureText + formattingPattern.substring(with: formattingPatternRange)
                 } else if tempString.characters.count > 0 {
                     let pureStringRange = tempIndex ..< tempString.index(tempIndex, offsetBy: 1)
-                    
+
                     finalText = finalText + tempString.substring(with: pureStringRange)
-                    
+
                     // we want the last number to be visible
                     if tempString.index(tempIndex, offsetBy: 1) == tempString.endIndex {
                         finalSecureText = finalSecureText + tempString.substring(with: pureStringRange)
                     } else {
                         finalSecureText = finalSecureText + String(secureTextReplacementChar)
                     }
-                    
+
                     tempIndex = tempString.index(after: tempIndex)
                 }
-                
+
                 formatterIndex = formattingPattern.index(after: formatterIndex)
-                
+
                 if formatterIndex >= formattingPattern.endIndex || tempIndex >= tempString.endIndex {
                     stop = true
                 }
             }
-            
+
             _textWithoutSecureBullets = finalText
             super.text = _formatedSecureTextEntry ? finalSecureText : finalText
         }
-        
+
         // Let's check if we have additional max length restrictions
         if maxLength > 0 {
             if text.characters.count > maxLength {

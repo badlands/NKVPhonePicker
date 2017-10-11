@@ -134,7 +134,9 @@ open class NKVPhonePickerTextField: TextFieldPatternFormat {
     // With code initialization you always must define textField's height 
     // in order to properly add a plus label.
     @available(*, unavailable)
-    init() { super.init(frame: CGRect.zero) }
+    init() {
+        super.init(frame: CGRect.zero)
+    }
 
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -152,7 +154,7 @@ open class NKVPhonePickerTextField: TextFieldPatternFormat {
     }
     
     private func initialize() {
-        self.leftViewMode = .always;
+        self.leftViewMode = .always
         self.keyboardType = .numberPad
         flagView = NKVFlagView(with: self)
         self.leftView = flagView
