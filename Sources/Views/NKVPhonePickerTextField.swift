@@ -5,15 +5,16 @@
 // nik-kov.com
 //
 
+import Foundation
 import UIKit
 
 open class NKVPhonePickerTextField: TextFieldPatternFormat {
     // MARK: Interface
-    // MARK: Settings
+    // MARK: - Settings
     /// Set this property in order to present the CountryPickerViewController
     /// when user clicks on the flag button
     @IBOutlet public weak var phonePickerDelegate: UIViewController?
-
+    
     /// Use this var for setting countries in the top of the tableView
     /// Ex:
     ///
@@ -118,26 +119,26 @@ open class NKVPhonePickerTextField: TextFieldPatternFormat {
     
     /// Insets for the flag icon.
     ///
-    /// Left and right insets affect on flag view. 
+    /// Left and right insets affect on flag view.
     /// Top and bottom insets - on image only.
     public var flagInsets: UIEdgeInsets? { didSet { customizeSelf() } }
     public var flagSize: CGSize?         { didSet { customizeSelf() } }
-
-
-
+    
+    
+    
     
     
     
     // MARK: - Implementation
     
     // MARK: Initialization
-    // With code initialization you always must define textField's height 
+    // With code initialization you always must define textField's height
     // in order to properly add a plus label.
     @available(*, unavailable)
     init() {
         super.init(frame: CGRect.zero)
     }
-
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         initialize()
@@ -155,7 +156,7 @@ open class NKVPhonePickerTextField: TextFieldPatternFormat {
     
     private func initialize() {
         self.leftViewMode = .always
-        self.keyboardType = .numberPad
+        self.keyboardType = .phonePad
         flagView = NKVFlagView(with: self)
         self.leftView = flagView
         self.delegate = self
@@ -169,7 +170,7 @@ open class NKVPhonePickerTextField: TextFieldPatternFormat {
         flagView.flagButton.addTarget(self, action: #selector(presentCountriesViewController), for: .touchUpInside)
         self.addTarget(self, action: #selector(textFieldDidChange), for: .editingChanged)
     }
-   
+    
     func addPlusLabel() {
         if isPlusPrefixExists && (plusLabel == nil) {
             plusLabel = UILabel(frame: CGRect.zero)
@@ -212,11 +213,11 @@ open class NKVPhonePickerTextField: TextFieldPatternFormat {
             pickerVC.countriesVCNavigationItem.title = pickerTitle
         }
         if let pickerTitleFont = pickerTitleFont, let navController = pickerVC.navigationController {
-            let fontAttributes = [NSFontAttributeName: pickerTitleFont]
+            let fontAttributes = [NSAttributedStringKey.font: pickerTitleFont]
             navController.navigationBar.titleTextAttributes = fontAttributes
         }
         if let pickerCancelButtonFont = pickerCancelButtonFont {
-            let fontAttributes = [NSFontAttributeName: pickerCancelButtonFont]
+            let fontAttributes = [NSAttributedStringKey.font: pickerCancelButtonFont]
             pickerVC.countriesVCNavigationItem.leftBarButtonItem?.setTitleTextAttributes(fontAttributes, for: .normal)
             pickerVC.countriesVCNavigationItem.leftBarButtonItem?.setTitleTextAttributes(fontAttributes, for: .highlighted)
         }
@@ -263,11 +264,11 @@ extension NKVPhonePickerTextField: UITextFieldDelegate {
     
     @objc fileprivate func textFieldDidChange() {
         if let newString = self.text {
-            if newString.characters.count == 1 || newString.characters.count == 0 {
+            if newString.count == 1 || newString.count == 0 {
                 self.setFlag(countryCode: "?")
             }
-
-            let firstFourLetters = String(newString.characters.prefix(5))
+            
+            let firstFourLetters = String(newString.prefix(5))
             self.setFlag(phoneExtension: firstFourLetters)
         }
     }
